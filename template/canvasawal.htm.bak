@@ -1,0 +1,26 @@
+
+<html>
+<head>
+<title>:: DEPARTEMEN LUAR NEGERI REPUBLIK INDONESIA ::</title>
+<link href="../config/adminstyle.css" rel="stylesheet" type="text/css" >
+<style type="text/css">
+<!--
+.style1 {font-family: Georgia, "Times New Roman", Times, serif}
+-->
+</style>
+</head>
+<body>
+<div id="header">
+  <div id="content">
+		<h2 >Login</h2>
+		<img src="../images/security3.png" width="100" height="100"  align="left">
+        {isi}
+   
+
+<p>&nbsp;</p>
+  </div>
+	<div align="center" id="footer">
+		Copyright &copy; 2009 by KaeL</div>
+</div>
+</body>
+</html>

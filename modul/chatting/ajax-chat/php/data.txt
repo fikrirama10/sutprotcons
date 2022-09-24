@@ -1,0 +1,249 @@
+a:10:{s:4:"time";a:1:{s:3:"asd";i:1426563216;}s:4:"away";a:1:{s:3:"asd";b:1;}s:4:"gndr";a:1:{s:3:"asd";s:4:"none";}s:4:"stat";a:1:{s:3:"asd";s:4:"none";}s:4:"room";a:1:{s:3:"asd";s:9:"Main Room";}s:4:"user";a:1:{s:3:"asd";d:1426563251.447000980377197265625;}s:4:"pass";a:1:{s:3:"asd";s:32:"7fdd7ef9cc9679238a70fe1a03c3d4b5";}s:4:"data";a:70:{i:0;s:30:"+
+Main Room
+user
+none
+none";i:1;s:10:"s
+user
+-";i:2;s:18:"-
+Main Room
+user";i:3;s:30:"+
+Main Room
+user
+none
+none";i:4;s:10:"s
+user
+-";i:5;s:32:"+
+Main Room
+admin2
+none
+none";i:6;s:20:"-
+Main Room
+admin2";i:7;s:32:"+
+Main Room
+admin2
+none
+none";i:8;s:18:"-
+Main Room
+user";i:9;s:12:"s
+admin2
+-";i:10;s:30:"+
+Main Room
+tria
+none
+none";i:11;a:5:{s:4:"time";i:1426562391;s:4:"room";s:9:"Main Room";s:4:"user";s:4:"tria";s:4:"priv";s:6:"admin2";s:4:"data";s:43:"m
+#705090
+none
+none
+tria
+admin2
+haloo";}i:12;s:18:"-
+Main Room
+tria";i:13;s:27:"+
+Room 1
+tria
+none
+none";i:14;s:15:"-
+Room 1
+tria";i:15;s:30:"+
+Main Room
+tria
+none
+none";i:16;s:10:"s
+tria
+-";i:17;s:18:"-
+Main Room
+tria";i:18;s:30:"+
+Main Room
+tria
+none
+none";i:19;a:5:{s:4:"time";i:1426562466;s:4:"room";s:9:"Main Room";s:4:"user";s:4:"tria";s:4:"priv";s:1:".";s:4:"data";s:37:"m
+#705090
+none
+none
+tria
+.
+halo";}i:20;s:12:"s
+admin2
++";i:21;a:5:{s:4:"time";i:1426562478;s:4:"room";s:9:"Main Room";s:4:"user";s:6:"admin2";s:4:"priv";s:1:".";s:4:"data";s:56:"m
+#3070b0
+none
+none
+admin2
+.
+hallo tria apa kabar?";}i:22;a:5:{s:4:"time";i:1426562491;s:4:"room";s:9:"Main Room";s:4:"user";s:6:"admin2";s:4:"priv";s:1:".";s:4:"data";s:55:"m
+#3070b0
+none
+none
+admin2
+.
+ASL Please? %%grin%%";}i:23;s:10:"s
+tria
+-";i:24;s:10:"s
+tria
++";i:25;a:5:{s:4:"time";i:1426562502;s:4:"room";s:9:"Main Room";s:4:"user";s:4:"tria";s:4:"priv";s:1:".";s:4:"data";s:131:"m
+#705090
+none
+none
+tria
+.
+%%sly%%%%sly%%%%sly%%%%sly%%%%sly%%%%sly%%%%sly%%%%sly%%%%sly%%%%sly%%%%sly%%%%sly%%%%sly%%%%sly%%";}i:26;a:5:{s:4:"time";i:1426562507;s:4:"room";s:9:"Main Room";s:4:"user";s:6:"admin2";s:4:"priv";s:4:"tria";s:4:"data";s:61:"m
+#3070b0
+none
+none
+admin2
+tria
+ih kamuuhh PM PM akuuhh";}i:27;a:5:{s:4:"time";i:1426562513;s:4:"room";s:9:"Main Room";s:4:"user";s:4:"tria";s:4:"priv";s:1:".";s:4:"data";s:49:"m
+#705090
+none
+none
+tria
+.
+smiley check oke";}i:28;a:5:{s:4:"time";i:1426562525;s:4:"room";s:9:"Main Room";s:4:"user";s:4:"tria";s:4:"priv";s:1:".";s:4:"data";s:38:"m
+#d05090
+none
+none
+tria
+.
+color";}i:29;a:5:{s:4:"time";i:1426562529;s:4:"room";s:9:"Main Room";s:4:"user";s:6:"admin2";s:4:"priv";s:1:".";s:4:"data";s:47:"m
+#3030b0
+none
+none
+admin2
+.
+text in BLUE";}i:30;a:5:{s:4:"time";i:1426562532;s:4:"room";s:9:"Main Room";s:4:"user";s:4:"tria";s:4:"priv";s:1:".";s:4:"data";s:42:"m
+#d05090
+none
+none
+tria
+.
+color oke";}i:31;s:20:"-
+Main Room
+admin2";i:32;s:29:"+
+Room 1
+admin2
+none
+none";i:33;s:17:"-
+Room 1
+admin2";i:34;s:32:"+
+Main Room
+admin2
+none
+none";i:35;a:5:{s:4:"time";i:1426562549;s:4:"room";s:9:"Main Room";s:4:"user";s:6:"admin2";s:4:"priv";s:1:".";s:4:"data";s:53:"m
+#3030b0
+none
+none
+admin2
+.
+join room 1 please";}i:36;s:20:"-
+Main Room
+admin2";i:37;s:29:"+
+Room 1
+admin2
+none
+none";i:38;a:5:{s:4:"time";i:1426562561;s:4:"room";s:6:"Room 1";s:4:"user";s:6:"admin2";s:4:"priv";s:1:".";s:4:"data";s:49:"m
+#3030b0
+none
+none
+admin2
+.
+im waitingg...";}i:39;s:10:"s
+tria
+-";i:40;a:5:{s:4:"time";i:1426562570;s:4:"room";s:6:"Room 1";s:4:"user";s:6:"admin2";s:4:"priv";s:1:".";s:4:"data";s:50:"m
+#3030b0
+none
+none
+admin2
+.
+still loading..";}i:41;s:17:"-
+Room 1
+admin2";i:42;s:32:"+
+Main Room
+admin2
+none
+none";i:43;s:18:"-
+Main Room
+tria";i:44;s:27:"+
+Room 1
+tria
+none
+none";i:45;a:5:{s:4:"time";i:1426562584;s:4:"room";s:9:"Main Room";s:4:"user";s:6:"admin2";s:4:"priv";s:1:".";s:4:"data";s:52:"m
+#3030b0
+none
+none
+admin2
+.
+cuy ke room1 cuuy";}i:46;s:20:"-
+Main Room
+admin2";i:47;s:29:"+
+Room 1
+admin2
+none
+none";i:48;a:5:{s:4:"time";i:1426562590;s:4:"room";s:6:"Room 1";s:4:"user";s:4:"tria";s:4:"priv";s:1:".";s:4:"data";s:41:"m
+#d05090
+none
+none
+tria
+.
+gini mas";}i:49;a:5:{s:4:"time";i:1426562596;s:4:"room";s:6:"Room 1";s:4:"user";s:6:"admin2";s:4:"priv";s:1:".";s:4:"data";s:45:"m
+#3030b0
+none
+none
+admin2
+.
+nahh siipp";}i:50;s:17:"-
+Room 1
+admin2";i:51;s:32:"+
+Main Room
+admin2
+none
+none";i:52;s:15:"-
+Room 1
+tria";i:53;s:12:"s
+admin2
+-";i:54;s:20:"-
+Main Room
+admin2";i:55;s:32:"+
+Main Room
+admin2
+none
+none";i:56;s:20:"-
+Main Room
+admin2";i:57;s:29:"+
+Room 2
+admin2
+none
+none";i:58;s:17:"-
+Room 2
+admin2";i:59;s:29:"+
+Room 1
+admin2
+none
+none";i:60;s:17:"-
+Room 1
+admin2";i:61;s:29:"+
+Room 2
+admin2
+none
+none";i:62;s:17:"-
+Room 2
+admin2";i:63;s:29:"+
+Room 1
+admin2
+none
+none";i:64;s:17:"-
+Room 1
+admin2";i:65;s:32:"+
+Main Room
+admin2
+none
+none";i:66;s:12:"s
+admin2
+-";i:67;s:20:"-
+Main Room
+admin2";i:68;s:29:"+
+Main Room
+asd
+none
+none";i:69;s:9:"s
+asd
+-";}s:4:"kick";a:0:{}s:4:"mute";a:0:{}}

@@ -1,0 +1,169 @@
+<?php
+
+switch($_GET[act]){
+
+  default:
+
+  echo "<h2>Laporan ID Card </h2> 
+    <form method=POST action='./deplu.php?module=lapidcarddetail&act=generate' enctype='multipart/form-data'>
+          <table width=80%>
+          <tr><td  width=150>Negara</td>  <td > : 
+          <select name='ID_NEGARA' >
+            ";
+            $tampil=mysql_query("SELECT * FROM m_negara where id_negara > 1 ORDER BY negara");
+            while($r=mysql_fetch_array($tampil)){
+              echo "<option value=$r[ID_NEGARA]>$r[NEGARA]</option>";
+            }
+
+	echo "
+			
+		  <tr><td  width=150>Jenis ID Card</td>  <td > : 
+          <select name='JENIS_IDCARD' >
+            <option value=1 >Diplomat</option> 
+            <option value=2 >Family</option> 
+    		</td></tr>
+			 <tr><td colspan=2></td> 
+    		</tr> 
+			";
+			
+    echo "</select></td></tr>
+		  <tr ><th colspan = 2 ><div align=left>Periode</div></th></tr>
+		  <tr><td>Dari</td><td><DIV id=\"tgl\"> <script>DateInput('TGL_AWAL', true, 'YYYY-MM-DD')</script></div></td></tr>
+		  <tr><td>Sampai Dengan</td><td><DIV id=\"tgl\"> <script>DateInput('TGL_AKHIR', true, 'YYYY-MM-DD')</script></div></td></tr>
+		  
+		  <tr><th colspan = 2><div align=right><input type=submit value=Generate> </div></th></tr>
+		
+
+		  </table></form>";
+
+
+
+	break;
+    case "generate":
+
+session_start();
+
+//session_register("G_sql_lap");
+
+$template = file("../template/canvasawal.htm");
+$template = implode("",$template ); 
+
+if (empty($_SESSION[G_iduser]) AND empty($_SESSION[G_namauser])){
+
+	$varname =  "<br> <center>Untuk mengakses modul, Anda harus login <br> <a href=index.php><b>LOGIN</b></a></center>";
+	
+	$template = eregi_replace("{isi}",$varname,$template);
+	echo $template;
+
+}else{
+
+		
+		$ID_NEGARA			 	= $_POST[ID_NEGARA];   
+		$ID_JNS_CETAK_KARTU 	= $_POST[ID_JNS_CETAK_KARTU]; 
+		$JENIS_IDCARD 			= $_POST[JENIS_IDCARD];
+		$TGL_AWAL 				= $_POST[TGL_AWAL]; 
+		$TGL_AKHIR 				= $_POST[TGL_AKHIR]; 
+		
+		
+		echo "<div align=center>
+		<h2>LAPORAN ID CARD ";
+		if($JENIS_IDCARD == '1'){
+			echo "DIPLOMAT</h2>";
+		}else{
+			echo "SIBLING</h2>";
+		}
+			
+		
+	echo"<div align=left>
+			<br>
+		
+		 &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp
+		 &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp
+		 <b>Periode : $TGL_AWAL / $TGL_AKHIR </b> <br>";
+		
+		$r = mysql_query("SELECT NEGARA FROM m_negara where id_negara = $ID_NEGARA ORDER BY negara");
+
+		while($negara=mysql_fetch_array($r)){
+            
+	   echo " &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp
+	   &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp
+	   <b>Negara : $negara[NEGARA] </b> </div> <br>";		
+
+		echo "<table width=700 >
+          <tr><th width=30>no</th><th width=300 >NAMA</th><th width=100>POSISI</th>
+		  <th width=100>TGL TIBA</th><th width=100>NO ID CARD</th><th width=100>TGL AWAL</th>
+		  <th width=100>TGL AKHIR</th><th width=100>JENIS ID CARD</th>
+		   <th width=100>MENGGANTIKAN SIAPA</th></tr>";
+	
+
+	if ($JENIS_IDCARD == '1'){
+		$QWERYNYA = "SELECT  a.ID_DIPLOMAT, a.NM_DIPLOMAT, a.NM_JNS_CETAK_KARTU, a.ID_CARD, b.TGL_TIBA, 
+		a.TGL_AWAL_CARD, a.TGL_AKHIR_CARD, b.PEKERJAAN, b.MENGGANTIKAN_SIAPA, c.NEGARA, a.ID_NEGARA, d.NM_DIPLOMAT as NM_PENGGANTI
+		from v_id_card2 as a left join diplomat as b on a.ID_DIPLOMAT = b.ID_DIPLOMAT
+		LEFT JOIN m_negara as c on a.ID_NEGARA = c.ID_NEGARA
+		left join diplomat as d on b.MENGGANTIKAN_SIAPA = d.ID_DIPLOMAT
+		where TGL_AWAL_CARD between '$TGL_AWAL' and '$TGL_AKHIR' and st_kartu = 2 and st_kartu_k = 2
+		and a.ID_NEGARA = $ID_NEGARA order by a.NM_DIPLOMAT";
+	}else{
+		$QWERYNYA = "SELECT  a.ID_SIBLING, a.NM_SIBLING, a.ID_DIPLOMAT, a.NM_DIPLOMAT, 
+		a.NM_JNS_CETAK_KARTU, a.ID_CARD, b.TGL_TIBA, 
+		a.TGL_AWAL_CARD, a.TGL_AKHIR_CARD, b.PEKERJAAN,  c.NEGARA, b.ID_NEGARA
+		from v_id_card_s as a left join sibling as b on a.ID_SIBLING = b.ID_SIBLING
+		LEFT JOIN m_negara as c on b.ID_NEGARA = c.ID_NEGARA
+		where TGL_AWAL_CARD between '$TGL_AWAL' and '$TGL_AKHIR' and st_kartu = 2 and st_kartu_k = 2
+		and b.ID_NEGARA = $ID_NEGARA order by a.NM_SIBLING";
+		
+	}
+	/*if ($ID_NEGARA == '1'){
+		$QWERYNYA = $QWERYNYA." and  a.ID_NEGARA <> 1 ";
+		}else{
+		$QWERYNYA = $QWERYNYA." and a.ID_NEGARA = $ID_NEGARA ";
+		}
+
+    $QWERYNYA = $QWERYNYA." order by a.NM_DIPLOMAT"; */
+
+   	  $_SESSION[G_sql_lap] = $QWERYNYA;
+
+	 $tampil=mysql_query($QWERYNYA);
+	 if (!$tampil) { // add this check.
+			die('Invalid query: ' . mysql_error());
+		}
+   
+    $no = 1;
+	$xxx= "..";
+    while($result=mysql_fetch_array($tampil)){
+		
+	  echo "     
+				<td>$no</td>	
+				<td>"; if($JENIS_IDCARD == '1'){
+						echo "$result[NM_DIPLOMAT]</td>";	
+						}else{
+						echo "$result[NM_SIBLING]</td>";	
+						}
+				echo"	
+				<td>$result[PEKERJAAN]</td>	
+				<td>$result[TGL_TIBA]</td>		
+				<td>$result[ID_CARD]</td>
+				<td>$result[TGL_AWAL_CARD]</td>
+				<td>$result[TGL_AKHIR_CARD]</td>
+				<td>$result[NM_JNS_CETAK_KARTU]</td>	
+				<td>$result[NM_PENGGANTI]</td>					
+		        </tr>";
+      $no++;
+    }
+	
+    echo "
+
+	
+
+	</table></div><br>";
+
+    break;
+		
+		
+		}
+
+		}
+		
+}
+?>

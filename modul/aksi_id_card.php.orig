@@ -1,0 +1,346 @@
+<?php
+//session_start();
+
+session_start();
+$template = file("../template/canvasawal.htm");
+$template = implode("",$template );
+
+if (empty($_SESSION[G_iduser]) AND empty($_SESSION[G_namauser])){
+
+	$varname =  "<br> <center>Untuk mengakses modul, Anda harus login <br> <a href=index.php><b>LOGIN</b></a></center>";
+
+	$template = eregi_replace("{isi}",$varname,$template);
+	echo $template;
+
+}else{
+
+
+include "../config/koneksi.php";
+include "../config/library.php";
+
+$module=$_GET[module];
+$act=$_GET[act];
+$idt=$_GET[idt];
+$neg=$_GET[negara];
+
+if ($module=='idcard' AND $act=='input'){
+
+$ID_DIPLOMAT= $_POST[ID_DIPLOMAT];
+$ID_JNS_CETAK_KARTU= $_POST[ID_JNS_CETAK_KARTU];
+$ID_CARD= $_POST[ID_CARD];
+$TGL_AWAL_CARD= $_POST[TGL_AWAL_CARD];
+$TGL_AKHIR_CARD= $_POST[TGL_AKHIR_CARD];
+if (isset($_POST[COUNTER_CETAK]) and $_POST[COUNTER_CETAK] != ''){
+$COUNTER_CETAK = $_POST[COUNTER_CETAK];}
+else
+{$COUNTER_CETAK = '0';}
+
+   mysql_query("insert into cetak_kartu_diplomat (ID_DIPLOMAT,ID_JNS_CETAK_KARTU,ID_CARD,TGL_AWAL_CARD,TGL_AKHIR_CARD,COUNTER_CETAK,ST_KARTU,ST_KARTU_K,ST_KARTU_KAS, KD_WORKFLOW, NO_DAFTAR)
+values ($ID_DIPLOMAT,$ID_JNS_CETAK_KARTU,'$ID_CARD','$TGL_AWAL_CARD','$TGL_AKHIR_CARD',$COUNTER_CETAK,2,2,2,3,'OFFLINE')");
+	//input persyaratan
+	$query_max_idpermit = mysql_query("SELECT MAX(id_cetak) as max FROM cetak_kartu_diplomat");
+	$max=mysql_fetch_array($query_max_idpermit);
+	$max=$max['max'];
+
+	foreach ($_POST['syarat'] as $syarat) {
+		$insert_syarat = mysql_query("INSERT INTO syarat_permit (syarat_kd, id_permit, file) VALUES ('".$syarat."','".$max."','OFFLINE')");
+	}
+
+	header('location: ./deplu.php?module='.$module.'&act=lihat_id_card&idt='.$ID_DIPLOMAT.'&negara='.$neg);
+ }
+elseif ($module=='idcard' AND $act=='hapus' AND isset($_GET[idc])){
+	  $idd = $_GET[idd];
+	  mysql_query("DELETE FROM cetak_kartu_diplomat WHERE ID_CETAK ='$_GET[idc]'");
+	  //$sql="select distinct(a.syarat_kd) from m_syarat a, syarat_permit b  WHERE a.jenis_izin='3' and b.id_permit='$_GET[idc]'";
+	  $sql="select distinct(b.syarat_permit_kd) from syarat_permit b LEFT JOIN m_syarat a on a.syarat_kd=b.syarat_kd  WHERE a.jenis_izin='3' and b.id_permit='$_GET[idc]';";
+ 	  $query = mysql_query($sql);
+	  while ($data=mysql_fetch_array($query)) {
+ 	 	 //mysql_query("DELETE FROM syarat_permit WHERE syarat_kd='".$data['syarat_kd']."'");
+		 mysql_query("DELETE FROM syarat_permit WHERE syarat_permit_kd='".$data['syarat_permit_kd']."'");
+  	  }
+header('location: ./deplu.php?module='.$module.'&act=lihat_id_card&idt='.$idd.'&negara='.$neg);
+
+
+}
+ elseif ($module == 'epo' AND $act == 'input') {
+
+    $ID_OTVIS = $_POST[ID_OTVIS];
+    $TIPE_VISA = $_POST[TIPE_VISA];
+    if ($TIPE_VISA == '1') {
+      $TIPE_VISA = 'S';
+    } else {
+      $TIPE_VISA = 'D';
+    }
+    $noDaftarTemp = 'EPO-' . date('ymdHis') . str_pad(rand(1, 999), 3, "0", STR_PAD_LEFT);
+    $KODE_AGENDA = $_POST[KD_AGENDA];
+    $TGL_BERANGKAT = $_POST[TGL_BERANGKAT];
+    $TGL_INPUT = date('Y-m-d');
+    $THN_AGENDA = date('y');
+
+    mysql_query("insert into epo_diplomat (NO_DAFTAR,ID_OTVIS,KODE_AGENDA,TGL_KEBERANGKATAN,ST_EPO,ST_EPO_K,ST_EPO_KAS,TGL_INPUT,THN_AGENDA,KD_WORKFLOW,TIPE_VISA)
+values ('$noDaftarTemp','$ID_OTVIS','$KODE_AGENDA','$TGL_BERANGKAT',1,1,1,'$TGL_INPUT','$THN_AGENDA','2','$TIPE_VISA')");
+    $max = mysql_insert_id();
+    //File
+    $cpt1 = $_FILES ['syarat_file'] ['name']; // mendaptkan jumlah file yang di unggah
+    $cpt = count($cpt1);
+    for ($i = 0; $i < $cpt; $i ++) {
+      $syarat = $_POST['SYARAT_KD'] [$i];
+      $acak_id = rand(00000000, 99999999);
+      $id_file = $acak_id . date('YmdHis') . $ID_OTVIS;
+
+      $lokasi_file_foto = $_FILES['syarat_file']['tmp_name'] [$i];
+      $tipe_file_foto = $_FILES['syarat_file']['type'] [$i];
+      $nama_file_foto = $_FILES['syarat_file']['name'] [$i];
+      $acak = rand(000000, 999999);
+      //$nama_file_unik_foto = $acak.'_'.$nama_file_foto;
+      $ext = explode(".", $nama_file_foto);
+      $nama_file_unik_foto = $acak . date('YmdHis') . $ID_OTVIS . $nama_file_foto . '.' . $ext[1];
+
+      // Apabila ada gambar yang diupload
+      if (!empty($lokasi_file_foto)) {
+        // Apabila tipe gambar bukan jpeg akan tampil peringatan
+        if ($tipe_file_foto != "image/jpeg" AND $tipe_file_foto != "image/pjpeg" AND $tipe_file_foto != "application/pdf") {
+
+          $varname = "Gagal menyimpan data !!! <br>
+              Tipe file <b>$nama_file_foto</b> : $tipe_file_foto <br>
+              Tipe file yang diperbolehkan adalah : <b>JPG/JPEG/PDF</b>.<br> <a href=javascript:history.go(-1)>Ulangi Lagi</a>";
+          //$template = eregi_replace("{isi}",$varname,$template);
+          $template = preg_match("/{isi}/", $varname, $template);
+          //echo $template;
+          echo $varname;
+          exit;
+        } else {
+          move_uploaded_file($lokasi_file_foto, "../upload/epo/$nama_file_unik_foto");
+          $field_foto = ',foto';
+          $file_foto = ',' . "'" . $nama_file_unik_foto . "'";
+
+           $insert_syarat = mysql_query("INSERT INTO syarat_epo (id_epo, syarat_kd, file) VALUES ('" . $max . "','" . $syarat . "','". $nama_file_unik_foto ."')");
+        }
+      }
+    }
+    //End File
+
+    //input persyaratan
+
+    //foreach ($_POST['SYARAT_KD'] as $syarat) {
+    //  $insert_syarat = mysql_query("INSERT INTO syarat_epo (id_epo, syarat_kd, file) VALUES ('" . $max . "','" . $syarat . "','OFFLINE')");
+    //}
+    if ($max) {
+      echo "<script>
+			 alert ('Tambah Data Permohonan EPO Berhasil!!!');
+             document.location.href='./deplu.php?module=epo&act=lihat_epo&idt=$ID_OTVIS&jns=manual';
+			 </script>";
+    } else {
+      echo "<script>
+			 alert ('Tambah Data Permohonan EPO GAGAL!!!');
+             document.location.href='./deplu.php?module=epo&act=lihat_epo&idt=$ID_OTVIS&jns=manual';
+			 </script>";
+    }
+    //header('location: ./deplu.php?module=epo&act=lihat_epo&idt=' . $ID_OTVIS . '&jns=manual');
+  }
+
+elseif ($module=='idcard' AND $act=='update' AND isset($_GET[idt])){
+$idt = $_GET[idt];
+$idc = $_GET[idc];
+$ID_CETAK = $_POST[ID_CETAK];
+$ID_DIPLOMAT= $_POST[ID_DIPLOMAT];
+$ID_ROOT_KANTOR = $_POST[ID_KNT_PERWAKILAN];
+$ID_JNS_CETAK_KARTU= $_POST[ID_JNS_CETAK_KARTU];
+$ID_CARD= $_POST[ID_CARD];
+$TGL_AWAL_CARD= $_POST[TGL_AWAL_CARD];
+$TGL_AKHIR_CARD= $_POST[TGL_AKHIR_CARD];
+$TGL_AMBIL_CARD= $_POST[TGL_AMBIL_BERKAS];
+$TGL_PENGEMBALIAN= $_POST[TGL_PENGEMBALIAN];
+$STATUS_PENGEMBALIAN= $_POST[STATUS_PENGEMBALIAN];
+$VERIFIKASI = $_POST[statusverifikasi];
+$KET = $_POST[keterangan];
+$tbl_baru_idcard= $_POST[ada_tbl_baru_idcard];
+$MOD_BY = $_SESSION[G_namauser];
+if (isset($_POST[COUNTER_CETAK]) and $_POST[COUNTER_CETAK] != ''){
+$COUNTER_CETAK = $_POST[COUNTER_CETAK];}
+else
+{$COUNTER_CETAK = '0';}
+
+
+
+/* if($ID_CARD)
+{
+	$kd_w = 'KD_WORKFLOW = 3';
+}
+else
+{
+	$kd_w = 'KD_WORKFLOW = 2';
+} */
+if($VERIFIKASI == 1)
+{
+	$TGL_AWAL_CARD = "TGL_AWAL_CARD = null,";
+	$TGL_AKHIR_CARD = "TGL_AKHIR_CARD = null,";
+	$TGL_AMBIL_CARD1 = "TGL_AMBIL_BERKAS = null,";
+	$kd_w = 'KD_WORKFLOW = 1';
+}
+elseif($VERIFIKASI == 2)
+{
+	$kd_w = 'KD_WORKFLOW = 3';
+
+	$TGL_AWAL_CARD = "TGL_AWAL_CARD = '$TGL_AWAL_CARD',";
+	$TGL_AKHIR_CARD = "TGL_AKHIR_CARD = '$TGL_AKHIR_CARD',";
+	$TGL_AMBIL_CARD1 = "TGL_AMBIL_BERKAS = '$TGL_AMBIL_CARD',";
+	//print_r($TGL_AMBIL_CARD);exit;
+}
+else
+{
+	$TGL_AWAL_CARD = "TGL_AWAL_CARD = null,";
+	$TGL_AKHIR_CARD = "TGL_AKHIR_CARD = null,";
+	$TGL_AMBIL_CARD1 = "TGL_AMBIL_BERKAS = null,";
+	$kd_w = 'KD_WORKFLOW = 2';
+}
+
+function sendemail($nodaftar,$nama,$email,$kd_flow,$ket,$tglambil)
+	{
+		$to      = $email;
+		//$noreg   = $nodaftar;
+		$bcc	 = 'BCC : no-reply.sito@kemlu.go.id';
+		//if
+
+
+		$messagelolos = "
+		<html>
+				<head>
+				<title>Konfirmasi Kartu Identitas</title>
+				</head>
+				<body>
+				<p>Yth. Pemohon </p>
+
+				<p>Permohonan atas nama : <strong>$nama</strong> dengan nomor registrasi : <strong>$nodaftar</strong> telah disetujui, dengan keterangan $ket  dan Kartu Identitas bisa diambil di loket Direktorat Fasilitas Diplomatik pada tanggal <b>$tglambil</b> berdasarkan perjanjian dengan membawa nota diplomatik, paspor, ID Card lama, dan surat keterangan kehilangan (untuk permohonan hilang) yang asli.
+				</p>
+				<br>Terima kasih
+				<br>==========================================================<br>
+				<p>To The Applicant</p>
+
+				<p>Your application with the registration number : <strong>$nodaftar</strong> for <strong>$nama</strong> has been approved with following note $ket and the ID Card can be collected on <b>$tglambil</b> at the Directorate of Diplomatic Facilities counter based on appointment by bring out the original diplomatic note, passport, old ID Card, and lost report from Police (for lost application).
+				</p>
+				<br>Thank you.
+				</body>
+				</html>
+		";
+
+		$messagetolak = "
+		<html>
+				<head>
+				<title>Konfirmasi Kartu Identitas</title>
+				</head>
+				<body>
+				<p>Yth. Pemohon </p>
+
+				<p>
+				Permohonan atas nama : <strong>$nama</strong> dengan nomor registrasi : <strong>$nodaftar</strong> belum disetujui,<br> dikarenakan $ket.<br> Terima Kasih
+				</p>
+				<br>=============================================================<br>
+				<p>To The Applicant </p>
+
+				<p>
+				Your application with the registration number : <strong>$nodaftar</strong> for <strong>$nama</strong>  has not been approved,<br> because : $ket.<br> Thank you.
+				</p>
+				<br>
+				</body>
+				</html>
+		";
+
+		$headers  = 'MIME-Version: 1.0' . "\r\n";
+		$headers .= 'Content-type: text/html; charset=iso-8859-1' . "\r\n";
+		$headers .= 'From: NO REPLY - Layanan Protokol Konsuler Kementerian Luar Negeri RI <no-reply.sito@kemlu.go.id>' . "\r\n".$bcc;
+
+		if($kd_flow == 2)
+		{
+			$message = $messagelolos;
+			$noreg1  = $nodaftar;
+			$subject_temp = 'Konfirmasi Kartu Identitas No. Daftar : '.$noreg1.' (DIPLOMAT) Disetujui / ID Card Confirmation Reg. No : '.$noreg1.' (DIPLOMAT) Approved';
+			$subject = $subject_temp;
+		}
+		elseif($kd_flow == 1)
+		{
+			$message = $messagetolak;
+			$noreg1  = $nodaftar;
+			$subject = 'Konfirmasi Kartu Identitas No. Daftar : '.$noreg1.' (DIPLOMAT) Ditolak / ID Card Confirmation Reg. No : '.$noreg1.' (DIPLOMAT) Rejected';
+		}
+
+		return mail($to, $subject, $message, $headers);
+
+	}
+
+	$a17 = "
+			select c.USER_PERWAKILAN_EMAIL AS EMAIL_EMBASSY,a.ID_CETAK,a.ID_DIPLOMAT,a.ID_JNS_CETAK_KARTU,a.ID_CARD,
+			a.TGL_AWAL_CARD,a.TGL_AKHIR_CARD,a.TGL_AMBIL_BERKAS,a.KD_WORKFLOW,a.NM_DIPLOMAT,
+			a.COUNTER_CETAK,
+			a.ST_KARTU,a.ST_KARTU_K,a.ST_KARTU_KAS,a.STATUS_PENGEMBALIAN, a.KETERANGAN,
+			a.ID_PERMIT, a.NO_DAFTAR from  v_id_card_w_permit a
+			RIGHT JOIN diplomat b on b.ID_DIPLOMAT=a.ID_DIPLOMAT
+			left JOIN tbl_user_perwakilan c on c.ID_KNT_PERWAKILAN = b.ID_KNT_PERWAKILAN
+			where a.ID_CETAK = $idc and a.KD_WORKFLOW>=1
+			";
+			//print_r($VERIFIKASI);exit;
+			$b17 = mysql_query($a17);
+			$c17 = mysql_fetch_array($b17);
+
+
+			if($VERIFIKASI == 1)
+			{
+
+				{
+				//print_r($c17);exit;
+				sendemail($c17['NO_DAFTAR'],$c17['NM_DIPLOMAT'],$c17['EMAIL_EMBASSY'],$VERIFIKASI,$KET,$TGL_AMBIL_CARD);
+				}
+			}
+			elseif($VERIFIKASI == 2)
+			{
+				//print_r($c17);exit;
+				if($c17['KD_WORKFLOW'] != 3)
+				{
+				//print_r($c17);exit;
+				sendemail($c17['NO_DAFTAR'],$c17['NM_DIPLOMAT'],$c17['EMAIL_EMBASSY'],$VERIFIKASI,$KET,$TGL_AMBIL_CARD);
+				}
+			}
+
+			$sql="update  cetak_kartu_diplomat set ID_DIPLOMAT = $ID_DIPLOMAT,
+											ID_JNS_CETAK_KARTU = $ID_JNS_CETAK_KARTU,
+											ID_CARD = '$ID_CARD',
+											$TGL_AWAL_CARD
+											$TGL_AKHIR_CARD
+											$TGL_AMBIL_CARD1
+											COUNTER_CETAK = $COUNTER_CETAK,
+											TGL_PENGEMBALIAN = '$TGL_PENGEMBALIAN',
+											STATUS_PENGEMBALIAN = '$STATUS_PENGEMBALIAN',
+											KETERANGAN = '$KET',
+											ID_ROOT_KANTOR = '$ID_ROOT_KANTOR',
+											$kd_w
+											where ID_CETAK =  $idc"; //echo $sql; exit;
+	if(mysql_query($sql))
+		{
+			if (!empty($_POST['syarat'])){
+				foreach ($_POST['syarat'] as $syarat) {
+					$insert_syarat = mysql_query("INSERT INTO syarat_permit (syarat_kd, id_permit) VALUES ('".$syarat."','".$idt."')");
+				}
+			}
+
+
+
+			echo "<script>
+			 alert ('Berhasil verifikasi ID Card Diplomat');
+			 document.location.href='./deplu.php?module=$module&act=lihat_id_card&idt=$ID_DIPLOMAT&negara=$neg';
+			 </script>";
+		}
+	 else
+		 {
+		 echo "<script>
+		 alert ('Gagal verifikasi ID Card Diplomat! mohon cek kembali pengisiannya.');
+		  document.location.href='./deplu.php?module=$module&act=lihat_id_card&idt=$ID_DIPLOMAT&negara=$neg';
+		 </script>";
+		  echo '<p style=\"font-size: 10pt\"><br> <b style=\"color : #800000\">Tambah Data Gagal.</b><br><a  onclick=self.history.back()><b><u>Kembali</u></b></a></p>';
+
+		 }
+	//header('location: ./deplu.php?module='.$module.'&act=lihat_id_card&idt='.$ID_DIPLOMAT.'&negara='.$neg);
+
+  }
+
+}
+?>

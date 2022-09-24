@@ -1,0 +1,7 @@
+create view v_cetak_id as
+SELECT a.id_card AS nomor, b.nm_diplomat AS nama, b.pekerjaan AS gelar, c.jns_paspor, "/", b.no_paspor, d.nm_knt_perwakilan AS perwakilan, a.tgl_akhir_card AS berlaku, e.ket AS jeniskartu, a.tgl_awal_card AS tglpembuatan
+FROM cetak_kartu_diplomat a, diplomat b, m_jns_paspor c, m_kantor_perwakilan d, rank e
+WHERE a.id_diplomat = b.id_diplomat
+AND b.id_jns_paspor = c.id_jns_paspor
+AND b.id_knt_perwakilan = d.id_knt_perwakilan
+AND b.id_rank = e.id_rank
